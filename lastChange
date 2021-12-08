@@ -1,0 +1,27 @@
+#!/bin/zsh
+#lasChange.sh
+
+#Бесконечный цикл
+while :; do
+#Запросил первую дату last-modified
+# Следуем readme-файлу для получения координат местоположения (altitude=___&lat=______&lon=________)
+  val1=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' | sed -e 's/Last-Modified: //')
+    
+#Засни на 15 минут
+  sleep 15m
+#Запросил вторую дату last-modified
+  val2=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' | sed -e 's/Last-Modified: //')
+
+
+#Если время обновления изменилось
+  if [[ $val1 != "$val2" ]]; then
+    
+#тогда загрузи новый JSON, и сохрани его в читаемом виде
+#файл сохраняется в /home/_______/.conky/weather_forecast.json.
+    curl -X GET --header 'Accept: application/json' 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | jq '.' > /home/_______/.conky/weather_forecast.json
+  fi
+  
+#Опять засни на 15 минут
+  sleep 15m
+done
+
