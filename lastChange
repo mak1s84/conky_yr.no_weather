@@ -5,12 +5,12 @@
 while :; do
 #Запросил первую дату last-modified
 # Следуем readme-файлу для получения координат местоположения (altitude=___&lat=______&lon=________)
-  val1=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' | sed -e 's/Last-Modified: //')
+  val1=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
     
 #Засни на 15 минут
   sleep 15m
 #Запросил вторую дату last-modified
-  val2=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' | sed -e 's/Last-Modified: //')
+  val2=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
 
 
 #Если время обновления изменилось
