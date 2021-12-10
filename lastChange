@@ -1,24 +1,32 @@
 #!/bin/zsh
 #lasChange.sh
+# В документации сказано, что НЕ нужно каждые ___ минут запрашивать новый JSON с данными о погоде (это может
+# вызвать блокировку вас сервером, скорее всего подозревается DDOS). Вместо этого рекомендуется каждые ___
+# минут запрашивать изменение данных на сервере (Last-Modified). Соответственно, если Last-Modified изменён,-
+# значить JSON обновлён и его можно загрузить.
 
 #Бесконечный цикл
 while :; do
 #Запросил первую дату last-modified
 # Следуем readme-файлу для получения координат местоположения (altitude=___&lat=______&lon=________)
-  val1=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
-    
+    val1=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
+# Недавно обнаружил, что поле Last-Modified изменило своё написание. Ранее было last-modified, стало Last-Modified.
+
+     val3=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' |sed -e 's/Last-Modified: //')
 #Засни на 15 минут
   sleep 15m
 #Запросил вторую дату last-modified
-  val2=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
+    val2=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
+    val4=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' |sed -e 's/Last-Modified: //')
 
-
-#Если время обновления изменилось
+#Если last-modified изменилось
   if [[ $val1 != "$val2" ]]; then
-    
 #тогда загрузи новый JSON, и сохрани его в читаемом виде
-#файл сохраняется в /home/_______/.conky/weather_forecast.json.
-    curl -X GET --header 'Accept: application/json' 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | jq '.' > /home/_______/.conky/weather_forecast.json
+    curl -X GET --header 'Accept: application/json' 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | jq '.' > /home/________/.conky/weather_forecast.json
+  elif [[ $val3 != "$val4" ]]; then
+
+#тогда загрузи новый JSON, и сохрани его в читаемом виде
+    curl -X GET --header 'Accept: application/json' 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | jq '.' > /home/________/.conky/weather_forecast.json
   fi
   
 #Опять засни на 15 минут
