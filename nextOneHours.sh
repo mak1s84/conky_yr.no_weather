@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 #set -x
-
+# File location ~/.conky/
 
 windSpeed=$(cat /home/_______/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.next_1_hours.summary.symbol_code' | sed s/'"'// | sed s/'"'//)
 

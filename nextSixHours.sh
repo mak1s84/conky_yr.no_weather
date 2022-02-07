@@ -1,5 +1,6 @@
 #!/bin/zsh
 #nextSixHours.sh
+# File location ~/.conky/
 #set -x
 
 

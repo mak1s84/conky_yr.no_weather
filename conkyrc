@@ -6,7 +6,7 @@
 #						#
 #################################################
 
-# save as ~/.config/conky/conky.conf	then you can just type conky in terminal to start
+# save as ~/.conkyrc	then you can just type conky in terminal to start
 
  # Warning! do not show external ip address in screenshots you post, disable or obscure in your screenshot #
 
@@ -25,8 +25,9 @@ conky.config = {
 	gap_x = 22,
 	gap_y = 65,
 
-	minimum_width = 285, minimum_height = 500,
-	maximum_width = 285,
+	minimum_width = 295,
+	maximum_width = 295,
+    minimum_height = 500,
 
     border_inner_margin = 9,
 	border_outer_margin = 1,
@@ -59,7 +60,7 @@ conky.config = {
 	own_window_argb_value = 0,
 	own_window_transparent = false,
 	own_window_argb_visual = true,
-	
+
 
 	default_color = '#00ffff', -- # effects border only
 	color1 = 'cyan',
@@ -73,44 +74,42 @@ conky.config = {
 };
 
 conky.text = [[
-${execi 500 sh /home/-----------/.weather.sh}
-${color1}                                 User: ${voffset 0}${color7}$user_names${font}
-${voffset 5}${color1}                          OS: "${if_existing /usr/bin/lsb_release} ${execi 10000 lsb_release -d | cut -f 2}${else} $distribution  ${endif}"
-${voffset 5}${color1}                      Kernel: $kernel
-${voffset 0}${color1}              Boot time:${color7} ${execi 10000 who -b |awk '{print $3}'}${color1} on ${color7}${execi 10000 who -b |awk '{print $4}'}
-${voffset 0}${color1}                           Uptime:${color7} $uptime
+#${execi 900 sh /home/________/.conky/weather.sh}
+${color1}${alignc}User: ${voffset 0}${color7}${user_names}
+${voffset 1}${color1}${alignc}OS: ${color7}"${if_existing /usr/bin/lsb_release} ${execi 10000 lsb_release -d | cut -f 2}${else} $distribution  ${endif}"
+${voffset 1}${color1}${alignc}Kernel: ${color7}$kernel
+${voffset 1}${color1}${alignc}Boot time:${color7} ${execi 10000 who -b |awk '{print $3}'}${color1} on ${color7}${execi 10000 who -b |awk '{print $4}'}
+${voffset 1}${color1}${alignc}Uptime:${color7}${uptime}
 #
-${alignc}${color5} .................................CPU ${freq_g} GHz ...............................
-${voffset 5}${color1}CPU1  ${color7}${cpu cpu1}%  ${color3}${execi 5 sensors|grep 'Core 0'|awk '{print $3}'}${goto 150}${color1}CPU2  ${color7}${cpu cpu2}%  ${color3}${execi 5 sensors|grep 'Core 2'|awk '{print $3}'}
+${voffset 5}${alignc}${color5} .................................CPU ${freq_g} GHz ...............................
+${voffset 2}${color1}CPU1  ${color7}${cpu cpu1}%  ${color3}${execi 5 sensors|grep 'Core 0'|awk '{print $3}'}${goto 150}${color1}${alignr}CPU2  ${color7}${cpu cpu2}%  ${color3}${execi 5 sensors|grep 'Core 2'|awk '{print $3}'}
 # cpugraphs
-${color6}${cpugraph cpu1 35,135 34495E ffffff} ${alignr}${cpugraph cpu2 35,135 34495E ffffff}
+${color6}${cpugraph cpu1 35,140 34495E ffffff} ${alignr}${cpugraph cpu2 35,140 34495E ffffff}
 #
-#${color1}CPU1 ${color3}${execi 10 sensors | grep -m 1 'Core 0'| cut -c16-18} °C                                       ${color1}CPU2 ${color3}${execi 10 sensors | grep -m 1 'Core 2'| cut -c16-18} °C
-#
-${voffset 5}${color1}RAM usage: ${color7}$mem${color1}${alignr}Free: ${color7}$memeasyfree
-${color2}${membar}
+${voffset 5}${color1}RAM usage: ${color7}${mem}${color1}${alignr}Free: ${color7}$memeasyfree
+${color2}${membar 10,295 34495E ffffff}
 #
 ${alignc}${color5} .............................................Disk  .....................................
 ${voffset 5}${color1}ROOT: ${color7}${fs_used /}${color1}${alignr}Free: ${color7}${fs_free /}
-${color2}${fs_bar /}
- ${voffset 5}${color1}HOME: ${color7}${fs_used /home/-----------/}${color1}${alignr}Free: ${color7}${fs_free /home/-----------/}
- ${color2}${fs_bar /home/-----------/}
-# ${voffset 5}${color1}HOME: ${color7}${fs_used /media/-----------/}${color1}${alignr}Free: ${color7}${fs_free /media/-----------/}
-# ${color2}${fs_bar /media/-----------/}
+${color2}${fs_bar 10,295 /}
+${voffset 5}${color1}HOME: ${color7}${fs_used /home/________/}${color1}${alignr}Free: ${color7}${fs_free /home/________/}
+ ${color2}${fs_bar 10,295 /home/________/}
+# ${voffset 5}${color1}HOME: ${color7}${fs_used /media/________/}${color1}${alignr}Free: ${color7}${fs_free /media/________/}
+# ${color2}${fs_bar /media/________/}
 #
 # network
 ${alignc}${color5} ..............................  Wi-Fi Соединение  ........................
 # ${color1}IP address: ${color7}${addr wlx503eaa535ade}
 #
 # Warning! do not show external ip address in screenshots you post, disable or obscure in your screenshot
- ${color1}External IP: ${color7}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+#${color1}External IP: ${color7}${execi 10000 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
 #
 ${color1}Connections: ${color7}${tcp_portmon 1 65535 count}
 ${color1}Скорость загрузки: ${color7}${downspeedf wlx503eaa535ade}
-${color1}Качество связи: ${color7}${wireless_link_qual_perc wlx503eaa535ade} %
+${color1}Качество связи: ${color7}${wireless_link_qual_perc wlx503eaa535ade}%
 #
 # netw graphs
-${voffset 5}${color6}${downspeedgraph wlx503eaa535ade 35,135 34495E ffffff 17000 -l} $alignr${upspeedgraph wlx503eaa535ade 35,135 34495E ffffff 3000 -l}
+${voffset 5}${color6}${downspeedgraph wlx503eaa535ade 35,140 34495E ffffff 17000 -l} ${alignr}${upspeedgraph wlx503eaa535ade 35,140 34495E ffffff 3000 -l}
 #
 ${voffset -5}${color1}Получено за ${alignr 5}Передано:
 ${color1}сессию:${color7}${goto 75}${totaldown wlx503eaa535ade} ${alignr 5}${totalup wlx503eaa535ade}
@@ -125,7 +124,11 @@ ${top name 4} ${goto 180}${top cpu 4}${alignr}${top mem 4}
 ${top name 5} ${goto 180}${top cpu 5}${alignr}${top mem 5}
 # Weather
 ${alignc}${color5} .....................................  Погода  .....................................
-# ${color1}Прогноз обновлён: ${color7}${execi 10 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].time' | sed 'y/T/ /' | awk '{print $2}' | sed s/':00Z"'//}
-${color1}${alignc}${font}Температура: ${color7}${alignc}${font}${execi 900 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.air_temperature' | tr -dc '[:print:]'﻿}°C ${font}${alignc}${color1} Влажность : ${color7}${alignc}${font}${execi 900 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.relative_humidity' | tr -dc '[:print:]'﻿}%
-${color1}${alignc}${font}Ветер: ${color7}${alignc}${execi 900 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.wind_speed' | tr -dc '[:print:]'﻿}м/с ${color1}${alignc}${font}Направление: ${color7}${alignc}${font}${execi 900 /home/-----------/.wind_direction.sh
+${color1}${alignc}${voffset 1}Температура: ${color7}${execi 90  cat /home/________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.air_temperature' | tr -dc '[:print:]'﻿}°C ${color1} Влажность: ${color7}${execi 90 cat /home/________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.relative_humidity' | tr -dc '[:print:]'﻿}%
+${color1}${alignc}${voffset 1}Ветер: ${color7}${execi 90 cat /home/________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.wind_speed' | tr -dc '[:print:]'﻿}м/с ${color1}Направление: ${color7}${execi 90 /home/________/.conky/wind_direction.sh}
+${color1}${alignc}${voffset 1}Через час: ${color7}${execi 90 /home/________/.conky/nextOneHours.sh} ${color1}${alignc}Осадки: ${color7}${execi 90 cat /home/________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.next_1_hours.details.precipitation_amount'} м/м
+${color1}${alignc}${voffset 1}Через 6 часов: ${color7}${execi 90 /home/________/.conky/nextSixHours.sh | sed -e 's/,/./' | tr -dc '[:print:]'﻿}°C
+#${color1}Через 6 часов: ${color7}${execi 90 cat /home/________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.next_6_hours.details.air_temperature_max' | tr -dc '[:print:]'﻿}°C
+# ${color1}Прогноз обновлён: ${color7}${execi 10 cat /home/________/.weather_forecast.json | jq '.properties.timeseries[0].time' | sed 'y/T/ /' | awk '{print $2}' | sed s/':00Z"'//}
+
  ]]
