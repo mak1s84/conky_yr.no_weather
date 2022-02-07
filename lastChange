@@ -5,31 +5,38 @@
 # минут запрашивать изменение данных на сервере (Last-Modified). Соответственно, если Last-Modified изменён,-
 # значить JSON обновлён и его можно загрузить.
 
+# Documentation says NOT to request a new JSON with weather data every ___ minutes (this can
+# cause the server to block you). Instead, it is recommended to request a #data change on the server (Last-Modified) every ___ minutes. Accordingly, if Last-Modified is changed, -
+# means the JSON has been updated and can be downloaded.
+
 #Бесконечный цикл
 while :; do
 #Запросил первую дату last-modified
 # Следуем readme-файлу для получения координат местоположения (altitude=___&lat=______&lon=________)
+#Requested the first date last-modified
+# Follow readme file to get location coordinates (altitude=___&lat=______&lon=________)
     val1=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
 # Недавно обнаружил, что поле Last-Modified изменило своё написание. Ранее было last-modified, стало Last-Modified.
+# Recently discovered that the Last-Modified field has changed its spelling. Previously it was last-modified, it became Last-Modified.
 
      val3=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' |sed -e 's/Last-Modified: //')
-#Засни на 15 минут
+#Засни на 15 минут \ Fall asleep for 15 minutes.
   sleep 15m
-#Запросил вторую дату last-modified
+#Запросил вторую дату last-modified \ #Requested a second last-modified date
     val2=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'last-modified: ' | sed -e 's/last-modified: //')
     val4=$(curl -I -s 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | grep -m1 'Last-Modified: ' |sed -e 's/Last-Modified: //')
 
-#Если last-modified изменилось
+#Если last-modified изменилось \ #If the last-modified variable has changed.
   if [[ $val1 != "$val2" ]]; then
-#тогда загрузи новый JSON, и сохрани его в читаемом виде
+#тогда загрузи новый JSON, и сохрани его в читаемом виде \ #then upload the new JSON, and save it in human readable form.
     curl -X GET --header 'Accept: application/json' 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | jq '.' > /home/________/.conky/weather_forecast.json
   elif [[ $val3 != "$val4" ]]; then
 
-#тогда загрузи новый JSON, и сохрани его в читаемом виде
+#тогда загрузи новый JSON, и сохрани его в читаемом виде \ #then upload the new JSON, and save it in human readable form.
     curl -X GET --header 'Accept: application/json' 'https://api.met.no/weatherapi/locationforecast/2.0/complete?altitude=___&lat=______&lon=________' | jq '.' > /home/________/.conky/weather_forecast.json
   fi
   
-#Опять засни на 15 минут
+#Опять засни на 15 минут \ Fall asleep for 15 minutes.
   sleep 15m
 done
 

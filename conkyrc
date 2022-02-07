@@ -73,47 +73,50 @@ conky.config = {
 };
 
 conky.text = [[
-
-${color1}                                 User: ${voffset 0}${color7}${user_names}
-${voffset 5}${color1}                          OS: ${color7}"${if_existing /usr/bin/lsb_release} ${execi 10000 lsb_release -d | cut -f 2}${else} $distribution  ${endif}"
-${voffset 5}${color1}                      Kernel: ${color7}$kernel
+${execi 500 sh /home/-----------/.weather.sh}
+${color1}                                 User: ${voffset 0}${color7}$user_names${font}
+${voffset 5}${color1}                          OS: "${if_existing /usr/bin/lsb_release} ${execi 10000 lsb_release -d | cut -f 2}${else} $distribution  ${endif}"
+${voffset 5}${color1}                      Kernel: $kernel
 ${voffset 0}${color1}              Boot time:${color7} ${execi 10000 who -b |awk '{print $3}'}${color1} on ${color7}${execi 10000 who -b |awk '{print $4}'}
 ${voffset 0}${color1}                           Uptime:${color7} $uptime
 #
-${alignc}${color5} .................................CPU ${freq_g} GHz ............................... 
+${alignc}${color5} .................................CPU ${freq_g} GHz ...............................
 ${voffset 5}${color1}CPU1  ${color7}${cpu cpu1}%  ${color3}${execi 5 sensors|grep 'Core 0'|awk '{print $3}'}${goto 150}${color1}CPU2  ${color7}${cpu cpu2}%  ${color3}${execi 5 sensors|grep 'Core 2'|awk '{print $3}'}
 # cpugraphs
 ${color6}${cpugraph cpu1 35,135 34495E ffffff} ${alignr}${cpugraph cpu2 35,135 34495E ffffff}
 #
 #${color1}CPU1 ${color3}${execi 10 sensors | grep -m 1 'Core 0'| cut -c16-18} °C                                       ${color1}CPU2 ${color3}${execi 10 sensors | grep -m 1 'Core 2'| cut -c16-18} °C
 #
-${voffset 5}${color1}RAM usage: ${color7}${mem}${color1}${alignr}Free: ${color7}$memeasyfree
+${voffset 5}${color1}RAM usage: ${color7}$mem${color1}${alignr}Free: ${color7}$memeasyfree
 ${color2}${membar}
 #
-${alignc}${color5} .............................................Disk  ..................................... 
+${alignc}${color5} .............................................Disk  .....................................
 ${voffset 5}${color1}ROOT: ${color7}${fs_used /}${color1}${alignr}Free: ${color7}${fs_free /}
 ${color2}${fs_bar /}
- ${voffset 5}${color1}HOME: ${color7}${fs_used /home/________/}${color1}${alignr}Free: ${color7}${fs_free /home/________/}
- ${color2}${fs_bar /home/_______/}
+ ${voffset 5}${color1}HOME: ${color7}${fs_used /home/-----------/}${color1}${alignr}Free: ${color7}${fs_free /home/-----------/}
+ ${color2}${fs_bar /home/-----------/}
+# ${voffset 5}${color1}HOME: ${color7}${fs_used /media/-----------/}${color1}${alignr}Free: ${color7}${fs_free /media/-----------/}
+# ${color2}${fs_bar /media/-----------/}
 #
 # network
-${alignc}${color5} ..............................  Wi-Fi Соединение  ........................ 
+${alignc}${color5} ..............................  Wi-Fi Соединение  ........................
+# ${color1}IP address: ${color7}${addr wlx503eaa535ade}
 #
 # Warning! do not show external ip address in screenshots you post, disable or obscure in your screenshot
-#${color1}External IP: ${color7}${execi 10000 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+ ${color1}External IP: ${color7}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
 #
 ${color1}Connections: ${color7}${tcp_portmon 1 65535 count}
-${color1}Скорость загрузки: ${color7}${downspeedf _________}
-${color1}Качество связи: ${color7}${wireless_link_qual_perc _________}% 
+${color1}Скорость загрузки: ${color7}${downspeedf wlx503eaa535ade}
+${color1}Качество связи: ${color7}${wireless_link_qual_perc wlx503eaa535ade} %
 #
 # netw graphs
-${voffset 5}${color6}${downspeedgraph _________ 35,135 34495E ffffff 17000 -l} ${alignr}${upspeedgraph _________ 35,135 34495E ffffff 3000 -l}
+${voffset 5}${color6}${downspeedgraph wlx503eaa535ade 35,135 34495E ffffff 17000 -l} $alignr${upspeedgraph wlx503eaa535ade 35,135 34495E ffffff 3000 -l}
 #
 ${voffset -5}${color1}Получено за ${alignr 5}Передано:
-${color1}сессию:${color7}${goto 75}${totaldown _________} ${alignr 5}${totalup _________}
+${color1}сессию:${color7}${goto 75}${totaldown wlx503eaa535ade} ${alignr 5}${totalup wlx503eaa535ade}
 #
 # Processes
-${alignc}${color5} ....................................... Процессы ................................ 
+${alignc}${color5} ....................................... Процессы ................................
 ${color1}Name${goto 180}CPU%${alignr}MEM%
 ${color4}${top name 1} ${goto 180}${top cpu 1}${alignr}${top mem 1}${color7}
 ${top name 2} ${goto 180}${top cpu 2}${alignr}${top mem 2}
@@ -121,9 +124,8 @@ ${top name 3} ${goto 180}${top cpu 3}${alignr}${top mem 3}
 ${top name 4} ${goto 180}${top cpu 4}${alignr}${top mem 4}
 ${top name 5} ${goto 180}${top cpu 5}${alignr}${top mem 5}
 # Weather
-${alignc}${color5} .....................................  Погода  ..................................... 
-${color1}${alignc}Температура: ${color7}${execi 900  cat /home/_________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.air_temperature' | tr -dc '[:print:]'﻿}°C ${color1} Влажность: ${color7}${execi 900 cat /home/_________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.relative_humidity' | tr -dc '[:print:]'﻿}%  
-${color1}${alignc}Ветер: ${color7}${execi 900 cat /home/_________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.wind_speed' | tr -dc '[:print:]'﻿}м/с ${color1}Направление: ${color7}${execi 900 /home/_________/.conky/wind_direction.sh}
-${color1}${alignc}Ближайший час: ${color7}${execi 900 /home/_________/.conky/nextOneHours.sh} 
-${color1}${alignc}Осадки: ${color7}${execi 900 cat /home/_________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.next_1_hours.details.precipitation_amount'} м/м ${color1}Через 6 часов: ${color7}${execi 900 cat /home/_________/.conky/weather_forecast.json | jq '.properties.timeseries[0].data.next_6_hours.details.air_temperature_max' | tr -dc '[:print:]'﻿}°C
+${alignc}${color5} .....................................  Погода  .....................................
+# ${color1}Прогноз обновлён: ${color7}${execi 10 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].time' | sed 'y/T/ /' | awk '{print $2}' | sed s/':00Z"'//}
+${color1}${alignc}${font}Температура: ${color7}${alignc}${font}${execi 900 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.air_temperature' | tr -dc '[:print:]'﻿}°C ${font}${alignc}${color1} Влажность : ${color7}${alignc}${font}${execi 900 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.relative_humidity' | tr -dc '[:print:]'﻿}%
+${color1}${alignc}${font}Ветер: ${color7}${alignc}${execi 900 cat /home/-----------/.weather_forecast.json | jq '.properties.timeseries[0].data.instant.details.wind_speed' | tr -dc '[:print:]'﻿}м/с ${color1}${alignc}${font}Направление: ${color7}${alignc}${font}${execi 900 /home/-----------/.wind_direction.sh
  ]]
